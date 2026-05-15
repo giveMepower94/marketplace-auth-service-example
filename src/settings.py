@@ -16,4 +16,3 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_hours: int = 24
     jwt_refresh_expire_days: int = 30
-
