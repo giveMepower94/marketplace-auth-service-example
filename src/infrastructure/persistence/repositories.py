@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.ports.repositories import UserRepository
@@ -17,7 +17,10 @@ class SQLAlchemyUserRepository(UserRepository):
         return _to_entity(model)
 
     async def get_by_id(self, user_id: int) -> User | None:
-        raise NotImplementedError
+        result = await self._session.execute(
+            select(UserModel).where(UserModel.id == user_id)
+        )
+        return result.scalar_one_or_none()
 
     async def get_by_email(self, email: str) -> User | None:
         result = await self._session.execute(
@@ -29,7 +32,13 @@ class SQLAlchemyUserRepository(UserRepository):
         return _to_entity(model)
 
     async def delete(self, user_id: int) -> bool:
-        raise NotImplementedError
+        result = await self._session.execute(
+            delete(UserModel).where(UserModel.id == user_id)
+        )
+        if result.rowcount == 0:
+            return False
+        await self._session.flush()
+        return True
 
 
 def _to_entity(model: UserModel) -> User:
