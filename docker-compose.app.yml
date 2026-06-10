@@ -25,6 +25,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USERNAME: postgres
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@auth-postgres:5432/auth_db
     depends_on:
       auth-postgres:
         condition: service_healthy
@@ -37,6 +38,7 @@ services:
     command: ["uv", "run", "python", "-m", "bin.api"]
     environment:
       POSTGRES_HOST: auth-postgres
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@auth-postgres:5432/auth_db
       POSTGRES_DATABASE_NAME: auth_db
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
