@@ -5,6 +5,7 @@ from httpx import ASGITransport, AsyncClient
 from src.presentation.api.dependencies import get_settings, get_uow
 from src.presentation.api.routes.internal import router as internal_router
 from src.presentation.api.routes.public import router as public_router
+from src.presentation.middleware import TraceIdMiddleware
 from src.settings import Settings
 from tests.conftest import FakeUnitOfWork
 
@@ -22,6 +23,7 @@ _test_settings = Settings(
 @pytest.fixture
 def app(fake_uow: FakeUnitOfWork) -> FastAPI:
     app = FastAPI()
+    app.add_middleware(TraceIdMiddleware)
     app.include_router(public_router)
     app.include_router(internal_router)
 
